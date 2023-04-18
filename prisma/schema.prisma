@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id Int @id @default(autoincrement())
 
   email String @unique
   hash  String
@@ -20,7 +20,7 @@ model User {
 }
 
 model Product {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id Int @id @default(autoincrement())
 
   name        String
   expiry_date DateTime
@@ -28,12 +28,20 @@ model Product {
   quantity      Int?
   quantity_type QuantityType?
 
+  status ProductStatus? @default(present)
+
   user   User?   @relation(fields: [user_id], references: [id])
-  user_id String? @db.ObjectId
+  user_id Int?
 }
 
 enum QuantityType {
   g
   mL
   pcs
+}
+
+enum ProductStatus {
+  present
+  discarded
+  consummed
 }

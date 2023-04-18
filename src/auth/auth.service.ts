@@ -50,7 +50,7 @@ export class AuthService {
     return this.getAccessToken(user.id);
   }
 
-  private async getAccessToken(id: string) {
+  private async getAccessToken(id: number) {
     const payload = {
       id
     };

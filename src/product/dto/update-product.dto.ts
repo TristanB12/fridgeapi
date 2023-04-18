@@ -1,6 +1,5 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
-import { QuantityType } from "@prisma/client"
-import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { ProductStatus, QuantityType } from "@prisma/client"
 
 export class UpdateProductDto {
   @IsString()
@@ -14,6 +13,11 @@ export class UpdateProductDto {
   @IsOptional()
   quantity: number
 
+  @IsEnum(QuantityType)
   @IsOptional()
   quantity_type: QuantityType
+
+  @IsEnum(ProductStatus)
+  @IsOptional()
+  status: ProductStatus
 }

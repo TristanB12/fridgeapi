@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { ProductStatus, User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
-import { CreateProductDto, UpdateProductDto } from './dto';
+import { CreateProductDto, FilterQueriesDto, UpdateProductDto } from './dto';
 import { ProductService } from './product.service';
 
 @UseGuards(JwtGuard)
@@ -11,8 +11,8 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getProducts(@GetUser() user: User) {
-    return this.productService.findManyByUser(user);
+  getProducts(@GetUser() user: User, @Query() queries: FilterQueriesDto) {
+    return this.productService.findManyByUser(user, queries.status);
   }
 
   @Post()
@@ -22,11 +22,11 @@ export class ProductController {
 
   @Put(':id')
   modifyProduct(@Param('id') productId: string, @GetUser() user: User, @Body() dto: UpdateProductDto) {
-    return this.productService.updateOne(user, dto, productId);
+    return this.productService.updateOne(user, dto, +productId);
   }
 
   @Delete(':id')
-  deleteProduct(@Param('id') productId: string, @GetUser() user: User){
-    return this.productService.delete(user, productId);
+  deleteProduct(@Param('id') productId: string, @GetUser() user: User) {
+    return this.productService.delete(user, +productId);
   }
 }

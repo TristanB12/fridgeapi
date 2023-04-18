@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ProductStatus, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
 
@@ -7,10 +7,10 @@ import { CreateProductDto, UpdateProductDto } from './dto';
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
-  async findManyByUser(user: User) {
+  async findManyByUser(user: User, status: ProductStatus) {
     try {
       return await this.prisma.product.findMany({
-        where: { user_id: user.id }
+        where: { user_id: user.id, status }
       })
     } catch (error) {
       throw error;
@@ -27,15 +27,15 @@ export class ProductService {
           expiry_date: new Date(dto.expiry_date),
           quantity: dto.quantity,
           quantity_type: dto.quantity_type,
-          user_id: user.id
-        }
+          user_id: user.id,
+        },
       })
     } catch (error) {
       throw error;
     }
   }
 
-  async updateOne(user: User, dto: UpdateProductDto, productId: string) {
+  async updateOne(user: User, dto: UpdateProductDto, productId: number) {
     if (dto.expiry_date && !this.isDateValid(dto.expiry_date))
       throw new BadRequestException('Invalid date.');
 
@@ -59,7 +59,7 @@ export class ProductService {
     }
   }
 
-  async delete(user: User, productId: string) {
+  async delete(user: User, productId: number) {
     try {
       const count = await this.prisma.product.count({
         where: {
