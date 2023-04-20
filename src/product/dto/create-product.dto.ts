@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
+import {IsNotEmpty, IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
 import { QuantityType } from "@prisma/client"
 
 export class CreateProductDto {
@@ -13,6 +13,7 @@ export class CreateProductDto {
   @IsOptional()
   quantity: number
 
+  @IsEnum(QuantityType)
   @IsOptional()
   quantity_type: QuantityType
 }

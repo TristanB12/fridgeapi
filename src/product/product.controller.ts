@@ -4,7 +4,10 @@ import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 import { CreateProductDto, FilterQueriesDto, UpdateProductDto } from './dto';
 import { ProductService } from './product.service';
+import { UseInterceptors } from '@nestjs/common';
+import { SentryInterceptor } from 'src/interceptors/sentry.interceptor';
 
+@UseInterceptors(SentryInterceptor)
 @UseGuards(JwtGuard)
 @Controller('product')
 export class ProductController {
