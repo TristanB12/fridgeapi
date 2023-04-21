@@ -16,7 +16,17 @@ model User {
   email String @unique
   hash  String
 
+  devices Device[]
   products Product[]
+}
+
+model Device {
+  id Int @id @default(autoincrement())
+
+  notification_token String @unique
+
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
 }
 
 model Product {

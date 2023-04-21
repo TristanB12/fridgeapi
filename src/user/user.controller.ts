@@ -1,4 +1,4 @@
-import { Controller, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, NotFoundException, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
@@ -14,5 +14,10 @@ export class UserController {
   @Delete()
   deleteAccount(@GetUser() user: User) {
     return this.userService.deleteUser(user.id);
+  }
+
+  @Post('device')
+  addDevice(@GetUser() user: User, @Body('notification_token') NotificationToken: string) {
+    return this.userService.linkDeviceToUser(user, NotificationToken);
   }
 }
