@@ -40,12 +40,14 @@ export class ListsService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, status: ProductStatus) {
     try {
       const list =  await this.prisma.list.findUnique({
         where: { id },
         include: {
-          products: true
+          products: {
+            where: {status }
+          }
         }
       })
       return this.serializedList(list);

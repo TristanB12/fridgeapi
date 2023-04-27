@@ -24,8 +24,8 @@ export class ListsController {
   }
 
   @Get(':id')
-  findOne(@GetUser() user: User, @Param('id') id: string) {
-    return this.listsService.findOne(+id);
+  findOne(@GetUser() user: User, @Param('id') id: string, @Query() queries: FilterQueriesDto) {
+    return this.listsService.findOne(+id, queries.status);
   }
 
   @Patch(':id')
