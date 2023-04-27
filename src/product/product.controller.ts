@@ -15,6 +15,7 @@ export class ProductController {
 
   @Get()
   getProducts(@GetUser() user: User, @Query() queries: FilterQueriesDto) {
+    console.log("rgdg")
     return this.productService.findManyByUser(user, queries.status);
   }
 

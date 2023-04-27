@@ -2,6 +2,8 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ProductStatus, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import * as moment from 'moment';
+import { ProductEntity } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
@@ -9,9 +11,10 @@ export class ProductService {
 
   async findManyByUser(user: User, status: ProductStatus) {
     try {
-      return await this.prisma.product.findMany({
+      const products = await this.prisma.product.findMany({
         where: { user_id: user.id, status }
       })
+      return this.serializedProduct(products);
     } catch (error) {
       throw error;
     }
@@ -28,9 +31,13 @@ export class ProductService {
           quantity: dto.quantity,
           quantity_type: dto.quantity_type,
           user_id: user.id,
+          list_id: dto.list_id
         },
       })
     } catch (error) {
+      if (error.code == 'P2003') {
+        throw new BadRequestException('list_id not valid.');
+      }
       throw error;
     }
   }
@@ -76,10 +83,26 @@ export class ProductService {
     }
   }
 
+  serializedProduct(data) : ProductEntity | ProductEntity[] {
+    const serialize = product => ({
+      id: product.id,
+      name: product.name,
+      expiry_date: product.expiry_date,
+      quantity: product.quantity,
+      quantity_type: product.quantity_type,
+      status: product.status,
+      expires_in: moment.duration(moment(product.expiry_date).diff(moment())).days(),
+    });
+
+    if (Array.isArray(data)) {
+      return data.map(e => serialize(e));
+    }
+    return serialize(data);
+  }
+
   private isDateValid(date: Date) {
     const expiryDate = new Date(date);
 
-    console.log(expiryDate.getTime())
     if (!expiryDate.getTime()) return false;
     return true;
   }

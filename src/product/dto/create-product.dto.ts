@@ -16,4 +16,8 @@ export class CreateProductDto {
   @IsEnum(QuantityType)
   @IsOptional()
   quantity_type: QuantityType
+
+  @IsNumber()
+  @IsOptional()
+  list_id: number
 }

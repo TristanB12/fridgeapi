@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ProductEntity } from 'src/product/entities/product.entity';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private productService: ProductService) {}
 
   async deleteUser(userId: number) {
     try {
@@ -30,6 +32,21 @@ export class UserService {
         }
       })
       return 'device added';
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDashboard(user: User) {
+    try {
+      const products = await this.productService.findManyByUser(user, undefined) as ProductEntity[];
+
+      console.log(products)
+      return {
+        red: products.filter(e => e.expires_in <= 0),
+        orange: products.filter(e => e.expires_in > 0 && e.expires_in <= 3),
+        yellow: products.filter(e => e.expires_in > 3 && e.expires_in <= 7)
+      }
     } catch (error) {
       throw error;
     }

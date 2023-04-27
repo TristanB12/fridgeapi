@@ -18,6 +18,7 @@ model User {
 
   devices Device[]
   products Product[]
+  lists List[]
 }
 
 model Device {
@@ -26,6 +27,17 @@ model Device {
   notification_token String @unique
 
   user User @relation(fields: [user_id], references: [id])
+  user_id Int
+}
+
+model List {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  products Product[]
+
+  user   User   @relation(fields: [user_id], references: [id])
   user_id Int
 }
 
@@ -40,8 +52,10 @@ model Product {
 
   status ProductStatus? @default(present)
 
-  user   User?   @relation(fields: [user_id], references: [id])
-  user_id Int?
+  user   User   @relation(fields: [user_id], references: [id])
+  list List? @relation(fields: [list_id], references: [id])
+  list_id Int?
+  user_id Int
 }
 
 enum QuantityType {

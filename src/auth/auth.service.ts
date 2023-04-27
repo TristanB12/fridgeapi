@@ -21,17 +21,21 @@ export class AuthService {
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          hash
+          hash,
+          lists: {
+            create: [
+              { name: 'Fridge' },
+              { name: 'Freezer' },
+              { name: 'Pantry' }
+            ]
+          }
         }
       });
       delete user.hash;
-      console.log(user)
       return this.getAccessToken(user.id);
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ForbiddenException('Credentials already taken');
-        }
+      if (error?.code === 'P2002') {
+        throw new ForbiddenException('Credentials already taken');
       }
       throw error;
     }
