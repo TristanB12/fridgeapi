@@ -33,6 +33,9 @@ export class UserService {
       })
       return 'device added';
     } catch (error) {
+      if (error.code == 'P2002') {
+        return 'device already registered.';
+      }
       throw error;
     }
   }
