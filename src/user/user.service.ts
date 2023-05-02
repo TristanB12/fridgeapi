@@ -42,7 +42,7 @@ export class UserService {
 
   async getDashboard(user: User) {
     try {
-      const products = await this.productService.findManyByUser(user, undefined) as ProductEntity[];
+      const products = await this.productService.findManyByUser(user, 'present') as ProductEntity[];
 
       console.log(products)
       return {
