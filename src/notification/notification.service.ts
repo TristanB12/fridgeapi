@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
 import Expo, { ExpoPushMessage, ExpoPushToken } from 'expo-server-sdk';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductEntity } from 'src/product/entities/product.entity';
@@ -19,7 +20,8 @@ export class NotificationService {
     return devices.filter(device => Expo.isExpoPushToken(device.notification_token));
   }
 
-  async testExpoSdk() {
+  @Cron('*/10 * * * *')
+  async notificationTask() {
     const messages: ExpoPushMessage[] = [];
     const users = await this.prisma.user.findMany({
       where: { devices: { some: {} } },

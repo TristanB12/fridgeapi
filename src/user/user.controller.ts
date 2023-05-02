@@ -26,9 +26,4 @@ export class UserController {
   addDevice(@GetUser() user: User, @Body('notification_token') NotificationToken: string) {
     return this.userService.linkDeviceToUser(user, NotificationToken);
   }
-
-  @Post('test')
-  test(@Body('token') token) {
-    return this.notificationService.testExpoSdk();
-  }
 }
