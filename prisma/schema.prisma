@@ -12,6 +12,7 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
+  created_at DateTime @default(now())
 
   email String @unique
   hash  String
@@ -26,7 +27,7 @@ model Device {
 
   notification_token String @unique
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 }
 
@@ -37,12 +38,13 @@ model List {
 
   products Product[]
 
-  user   User   @relation(fields: [user_id], references: [id])
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 }
 
 model Product {
   id Int @id @default(autoincrement())
+  created_at DateTime @default(now())
 
   name        String
   expiry_date DateTime
@@ -51,11 +53,19 @@ model Product {
   quantity_type QuantityType?
 
   status ProductStatus? @default(present)
+  notification_status NotificationStatus @default(none)
 
-  user   User   @relation(fields: [user_id], references: [id])
-  list List? @relation(fields: [list_id], references: [id])
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  list List? @relation(fields: [list_id], references: [id], onDelete: Cascade)
   list_id Int?
   user_id Int
+}
+
+enum NotificationStatus {
+  none
+  yellow
+  orange
+  red
 }
 
 enum QuantityType {

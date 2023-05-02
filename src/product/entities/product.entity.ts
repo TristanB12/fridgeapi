@@ -1,4 +1,4 @@
-import { ProductStatus, QuantityType } from "@prisma/client"
+import { NotificationStatus, ProductStatus, QuantityType } from "@prisma/client"
 
 export class ProductEntity {
   id: number
@@ -8,4 +8,5 @@ export class ProductEntity {
   quantity_type: QuantityType
   status: ProductStatus
   expires_in: number
+  notification_status: NotificationStatus
 }

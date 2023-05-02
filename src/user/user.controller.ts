@@ -29,6 +29,6 @@ export class UserController {
 
   @Post('test')
   test(@Body('token') token) {
-    return this.notificationService.testExpoSdk(token);
+    return this.notificationService.testExpoSdk();
   }
 }
