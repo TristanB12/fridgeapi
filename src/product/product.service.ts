@@ -92,7 +92,7 @@ export class ProductService {
       quantity_type: product.quantity_type,
       status: product.status,
       notification_status: product.notification_status,
-      expires_in: moment.duration(moment(product.expiry_date).diff(moment())).asDays(),
+      expires_in: Math.round(moment.duration(moment(product.expiry_date).diff(moment())).asDays()),
     });
 
     if (Array.isArray(data)) {
